@@ -58,7 +58,7 @@
                     p.Product_Name as product_name,
                     ifnull(sum(sd.SaleDetails_TotalQuantity), 0) as sold_quantity
                 from tbl_saledetails sd
-                join tbl_product p on p.Product_SlNo = sd.Product_IDNo
+                left join tbl_product p on p.Product_SlNo = sd.Product_IDNo
                 WHERE sd.SaleDetails_BranchId =?
                 group by sd.Product_IDNo
                 order by sold_quantity desc
@@ -75,7 +75,7 @@
                 c.Customer_Name as customer_name,
                 ifnull(sum(sm.SaleMaster_TotalSaleAmount), 0) as amount
                 from tbl_salesmaster sm 
-                join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
+                left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
                 WHERE sm.SaleMaster_branchid = ?
                 group by sm.SalseCustomer_IDNo
                 order by amount desc 
@@ -90,7 +90,7 @@
             $monthlyRecord = [];
             $year = date('Y');
             $month = date('m');
-            $dayNumber = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+            $dayNumber = date('t', mktime(0, 0, 0, $month, 1, $year));
             for($i = 1; $i <= $dayNumber; $i++){
                 $date = $year . '-' . $month . '-'. sprintf("%02d", $i);
                 $query = $this->db->query("
@@ -148,7 +148,7 @@
                         ', Due: ', sm.SaleMaster_DueAmount
                     ) as sale_text
                 from tbl_salesmaster sm 
-                join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
+                left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
                 where sm.Status = 'a'
                 and sm.SaleMaster_branchid = ?
                 order by sm.SaleMaster_SlNo desc limit 20
@@ -210,7 +210,7 @@
                 c.Customer_Name as customer_name,
                 ifnull(sum(sm.SaleMaster_TotalSaleAmount), 0) as amount
                 from tbl_salesmaster sm 
-                join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
+                left join tbl_customer c on c.Customer_SlNo = sm.SalseCustomer_IDNo
                 where sm.SaleMaster_branchid = ?
                 group by sm.SalseCustomer_IDNo
                 order by amount desc 
@@ -223,7 +223,7 @@
                     p.Product_Name as product_name,
                     ifnull(sum(sd.SaleDetails_TotalQuantity), 0) as sold_quantity
                 from tbl_saledetails sd
-                join tbl_product p on p.Product_SlNo = sd.Product_IDNo
+                left join tbl_product p on p.Product_SlNo = sd.Product_IDNo
                 group by sd.Product_IDNo
                 order by sold_quantity desc
                 limit 5
